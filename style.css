@@ -187,6 +187,48 @@ kbd {
   color: var(--kbd-fg);
 }
 
+/* ---- Controles táctiles ---- */
+.touch-controls {
+  display: none;
+}
+
+.touch-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.touch-btn svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.touch-btn {
+  width: 56px;
+  height: 56px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--kbd-border);
+  border-radius: 12px;
+  background: var(--kbd-bg);
+  color: var(--fg);
+  font-size: 22px;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.touch-btn:active {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
 /* ---- Overlay ---- */
 .overlay {
   position: absolute;
@@ -240,4 +282,89 @@ kbd {
 
 #restart-btn:hover {
   background: var(--accent-hover);
+}
+
+/* ---- Móvil / tablet táctil ---- */
+@media (max-width: 600px), (pointer: coarse) {
+  body {
+    align-items: flex-start;
+    padding: 10px;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .title-bar {
+    margin-bottom: 10px;
+  }
+
+  .game-title {
+    font-size: 24px;
+    letter-spacing: 6px;
+  }
+
+  .game-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  #board {
+    height: min(46vh, 460px);
+    height: min(46dvh, 460px);
+    width: auto;
+    max-width: 92vw;
+    touch-action: manipulation;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 340px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    padding-top: 0;
+  }
+
+  .panel-section {
+    flex: 1 1 auto;
+    gap: 2px;
+  }
+
+  .value {
+    font-size: 20px;
+  }
+
+  .panel-section-next {
+    flex-basis: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #next-canvas {
+    width: 60px;
+    height: 60px;
+  }
+
+  .controls {
+    display: none;
+  }
+
+  .touch-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 12px;
+  }
 }

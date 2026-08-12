@@ -134,6 +134,14 @@ function ghostY() {
   return gy;
 }
 
+function moveLeft() {
+  if (!collide(current.shape, current.x - 1, current.y)) current.x--;
+}
+
+function moveRight() {
+  if (!collide(current.shape, current.x + 1, current.y)) current.x++;
+}
+
 function hardDrop() {
   const gy = ghostY();
   score += (gy - current.y) * 2;
@@ -239,6 +247,7 @@ function endGame() {
   cancelAnimationFrame(animId);
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
+  restartBtn.textContent = 'Reiniciar';
   overlay.classList.remove('hidden');
 }
 
@@ -246,12 +255,14 @@ function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    overlay.classList.add('hidden');
     lastTime = performance.now();
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
     overlayTitle.textContent = 'PAUSA';
     overlayScore.textContent = '';
+    restartBtn.textContent = 'Reanudar';
     overlay.classList.remove('hidden');
   }
 }
@@ -268,6 +279,7 @@ function loop(ts) {
       lockPiece();
     }
   }
+  if (gameOver) return;
   draw();
   animId = requestAnimationFrame(loop);
 }
@@ -296,10 +308,10 @@ document.addEventListener('keydown', e => {
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
-      if (!collide(current.shape, current.x - 1, current.y)) current.x--;
+      moveLeft();
       break;
     case 'ArrowRight':
-      if (!collide(current.shape, current.x + 1, current.y)) current.x++;
+      moveRight();
       break;
     case 'ArrowDown':
       softDrop();
@@ -316,7 +328,55 @@ document.addEventListener('keydown', e => {
   updateHUD();
 });
 
-restartBtn.addEventListener('click', init);
+restartBtn.addEventListener('click', () => {
+  if (paused && !gameOver) togglePause();
+  else init();
+});
+
+function performAction(fn) {
+  if (paused || gameOver) return;
+  fn();
+  updateHUD();
+}
+
+function bindTap(el, trigger) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    trigger();
+  });
+}
+
+function bindRepeatable(el, trigger) {
+  let timeoutId = null;
+  let intervalId = null;
+  const stop = () => {
+    clearTimeout(timeoutId);
+    clearInterval(intervalId);
+    timeoutId = intervalId = null;
+  };
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    stop();
+    trigger();
+    timeoutId = setTimeout(() => { intervalId = setInterval(trigger, 60); }, 250);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => el.addEventListener(evt, stop));
+}
+
+const TOUCH_ACTIONS = {
+  left: { fn: moveLeft, repeat: true },
+  right: { fn: moveRight, repeat: true },
+  down: { fn: softDrop, repeat: true },
+  rotate: { fn: tryRotate },
+  drop: { fn: hardDrop },
+  pause: { fn: togglePause, bypassGuard: true },
+};
+
+document.querySelectorAll('.touch-btn[data-action]').forEach(btn => {
+  const cfg = TOUCH_ACTIONS[btn.dataset.action];
+  const trigger = cfg.bypassGuard ? cfg.fn : () => performAction(cfg.fn);
+  (cfg.repeat ? bindRepeatable : bindTap)(btn, trigger);
+});
 
 themeSwitch.addEventListener('change', () => {
   applyTheme(themeSwitch.checked);
