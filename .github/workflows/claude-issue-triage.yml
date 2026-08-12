@@ -30,7 +30,7 @@ jobs:
 
             1. Ejecuta `gh label list` para ver las labels existentes en el repositorio y aplica al issue (con `gh issue edit ${{ github.event.issue.number }} --add-label "..."`) las que correspondan según su contenido (por ejemplo bug, enhancement, documentation, question, etc.). Si el issue ya tiene labels que ya no aplican, puedes quitarlas con `--remove-label`. No crees labels nuevas: usa únicamente las que ya existen en el repositorio.
             2. Revisa el código del repositorio (`game.js`, `index.html`, `style.css`) para entender el contexto relevante al issue.
-            3. Publica un comentario en el issue (`gh issue comment ${{ github.event.issue.number }} --body "..."`) con un diagnóstico general: causa probable del problema o alcance de la petición, archivos/funciones del código afectados, y una propuesta de plan de siguientes pasos para abordar la solución.
+            3. Publica un comentario en el issue (`gh issue comment ${{ github.event.issue.number }} --body "..."`) con un diagnóstico general: causa probable del problema o alcance de la petición, archivos/funciones del código afectados, y una propuesta de plan de siguientes pasos para abordar la solución. Redacta el comentario en formato Markdown válido para GitHub (encabezados, listas, bloques de código con \`\`\` y referencias a archivos con backticks) para que se muestre bien formateado.
 
             No implementes código ni abras un pull request: esta tarea es solo de triage y diagnóstico.
 
